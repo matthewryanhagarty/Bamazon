@@ -1,6 +1,7 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var Table = require("cli-table");
+var newStock;
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -67,24 +68,19 @@ function printAll() {
     ])
   
       .then(function (answer) {
-  
-        for (var j = 0; j < res.length; j++) {
-          if (answer.id === productId) {
-            var productId = res[i].id;
-            var stockQuantity = res[i].stock_quantity;
-          } if (answer.quantity <= stockQuantity && rstockQuantity > 0) {
-
-            var newStock = res[i].stock_quantity - answer.quantity;
-            updateProduct(newStock, productId)
+        console.log(answer.id)
+        var currentItem = res[answer.id -1];
+        var stockQuantity = currentItem.stock_quantity;
+        
+            if (answer.quantity < stockQuantity && stockQuantity > 0) {
+              var newQuantity = stockQuantity - answer.quantity;
+              updateProduct(newQuantity, answer.id);
 
           } else {
             console.log("We do not have enough of your item in stock");
           }
-        }
-      }
-      )
-      // updateProduct(newStock, productId)
-  });
+    })
+  })
 }
 
 

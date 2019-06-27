@@ -1,9 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var Table = require("cli-table");
-var newStock;
-var userQuantity;
-var productId;
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -42,7 +39,6 @@ function printAll() {
         res[i].stock_quantity,
       ]);
     }
-    newStock = res[i].stock_quantity
     console.log(table.toString());
 
     inquirer.prompt([
@@ -71,25 +67,69 @@ function printAll() {
     ])
   
       .then(function (answer) {
-
-        newStock = stock_quantity - answer.quantity;
-        productId = res[i].id;
   
-        for (var i = 0; i < res.length; i++) {
-          if (answer.id === productId && answer.quantity <= res[i].quantity_stock) {
+        for (var j = 0; j < res.length; j++) {
+          if (answer.id === productId) {
+            var productId = res[i].id;
+            var stockQuantity = res[i].stock_quantity;
+          } if (answer.quantity <= stockQuantity && rstockQuantity > 0) {
+
+            var newStock = res[i].stock_quantity - answer.quantity;
             updateProduct(newStock, productId)
+
           } else {
-            console.log("We don't have enough of your item in stock");
+            console.log("We do not have enough of your item in stock");
           }
         }
-  
       }
       )
-
+      // updateProduct(newStock, productId)
   });
 }
 
-// function userPrompt() {
+
+  function updateProduct(newStock, productId) {
+    connection.query(
+
+      "UPDATE products SET ? WHERE ?", 
+      [
+        {
+          stock_quantity: newStock
+        },
+        {
+          item_id: productId
+        }
+      ],
+  function(err) {
+         if (err) throw err;
+  printAll();
+  }
+      );
+  }
+
+
+
+  // connection.query(
+
+  //   console.log(answer),
+
+  //   "UPDATE products SET ? WHERE ?",
+  //   [
+  //     {
+  //       stock_quantity: newStock
+  //     },
+  //     {
+  //       item_id: answer.id
+  //     }
+  //   ],
+  //   function (err) {
+  //     if (err) throw err;
+  //     printAll();
+  //   }
+  // );
+
+
+  // function userPrompt() {
 //   inquirer.prompt([
 //     {
 //       name: "id",
@@ -127,47 +167,3 @@ function printAll() {
 //     )
 
 // }
-
-
-
-
-
-  function updateProduct(newStock, productId) {
-    connection.query(
-
-      "UPDATE products SET ? WHERE ?", 
-      [
-        {
-          stock_quantity: newStock
-        },
-        {
-          item_id: productId
-        }
-      ],
-  function(err, res) {
-         if (err) throw err;
-  printAll();
-  }
-      );
-  }
-
-
-
-  // connection.query(
-
-  //   console.log(answer),
-
-  //   "UPDATE products SET ? WHERE ?",
-  //   [
-  //     {
-  //       stock_quantity: newStock
-  //     },
-  //     {
-  //       item_id: answer.id
-  //     }
-  //   ],
-  //   function (err) {
-  //     if (err) throw err;
-  //     printAll();
-  //   }
-  // );

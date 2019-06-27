@@ -5,22 +5,22 @@ var Table = require("cli-table");
 var connection = mysql.createConnection({
   host: "localhost",
 
-  // Your port; if not 3306
   port: 3306,
 
-  // Your username
   user: "root",
 
-  // Your password
   password: "password",
   database: "bamazon_db"
 });
 
+var newStock;
+
 connection.query("SELECT * FROM products", function(err, res) {
+  console.log("connected as id " + connection.threadId);
     if (err) throw err;
-    console.log("connected as id " + connection.threadId);
     printAll();
   });
+
 
   function printAll() {
 
@@ -41,5 +41,80 @@ connection.query("SELECT * FROM products", function(err, res) {
         ]);
       }
       console.log(table.toString());
+      userPrompt();
     });
   }
+
+  function userPrompt(newStock) {
+    inquirer.prompt([
+      {
+      name: "id",
+      type: "input",
+      message: "What is the ID of the Item you would like to purchase?",
+      validate: function(value) {
+        if (isNaN(value) === false) {
+          return true;
+        }
+        return false;
+      }
+    },
+    {
+      name: "quantity",
+      type: "input",
+      message: "How many would you like to purchase?",
+      validate: function(value) {
+        if (isNaN(value) === false) {
+          return true;
+        }
+        return false;
+      }
+    },
+  ])
+    
+    .then(function(answer){
+
+      var query = connection.query(
+
+        console.log(answer),
+
+        "UPDATE products SET ? WHERE ?", 
+        [
+          {
+            stock_quantity: newStock
+          },
+          {
+            item_id: answer.id
+          }
+        ],
+    function(err) {
+    if (err) throw err;
+    printAll();
+    }
+        );
+
+    }
+    )
+    
+  }
+
+  
+
+
+
+  // function updateProduct() {
+  //   connection.query(
+
+  //     "UPDATE products SET ? WHERE ?", 
+  //     [
+  //       {
+  //         stock_quantity: stock_quantity - answer.quantity
+  //       },
+  //       {
+  //         item_id: answer.id
+  //       }
+  //     ],
+  // function(err, res) {
+  // printAll();
+  // }
+  //     );
+  // }

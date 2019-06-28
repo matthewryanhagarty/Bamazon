@@ -82,7 +82,7 @@ function printAll() {
           var currentItem = res[answer.id -1];
           var stockQuantity = currentItem.stock_quantity;
           
-              if (answer.quantity < stockQuantity && stockQuantity > 0) {
+              if (answer.quantity <= stockQuantity && stockQuantity >= 0) {
                 var newQuantity = stockQuantity - answer.quantity;
                 console.log("\n\n Your purchase was successful!\n\nIf you forgot to purchase an item, please place another order!\n\n")
                 updateProduct(newQuantity, answer.id);

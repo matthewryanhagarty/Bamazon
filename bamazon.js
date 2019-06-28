@@ -21,6 +21,7 @@ connection.query("SELECT * FROM products", function (err, res) {
 });
 
 
+
 function printAll() {
 
   connection.query("SELECT * FROM products", function (err, res) {

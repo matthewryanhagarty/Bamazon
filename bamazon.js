@@ -1,7 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var Table = require("cli-table");
-var newStock;
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -42,6 +41,14 @@ function printAll() {
     }
     console.log(table.toString());
 
+    userPrompt()
+
+  }
+  )}
+
+    
+  function userPrompt(){
+
     inquirer.prompt([
       {
         name: "id",
@@ -68,20 +75,24 @@ function printAll() {
     ])
   
       .then(function (answer) {
-        console.log(answer.id)
-        var currentItem = res[answer.id -1];
-        var stockQuantity = currentItem.stock_quantity;
-        
-            if (answer.quantity < stockQuantity && stockQuantity > 0) {
-              var newQuantity = stockQuantity - answer.quantity;
-              updateProduct(newQuantity, answer.id);
+        connection.query("SELECT * FROM products", function (err, res) {
+          if (err) throw err;
 
-          } else {
-            console.log("We do not have enough of your item in stock");
-          }
+          var currentItem = res[answer.id -1];
+          var stockQuantity = currentItem.stock_quantity;
+          
+              if (answer.quantity < stockQuantity && stockQuantity > 0) {
+                var newQuantity = stockQuantity - answer.quantity;
+                console.log("\n\n Your purchase was successful!\n\nIf you forgot to purchase an item, please place another order!\n\n")
+                updateProduct(newQuantity, answer.id);
+  
+            } else {
+              console.log("\n\nSorry, we do not have enough of your item in stock.\n \nPlease review our stock quantities and place another order.\n\nThank you!\n\n");
+              userPrompt();
+            }
     })
   })
-}
+  }
 
 
   function updateProduct(newStock, productId) {
@@ -102,64 +113,3 @@ function printAll() {
   }
       );
   }
-
-
-
-  // connection.query(
-
-  //   console.log(answer),
-
-  //   "UPDATE products SET ? WHERE ?",
-  //   [
-  //     {
-  //       stock_quantity: newStock
-  //     },
-  //     {
-  //       item_id: answer.id
-  //     }
-  //   ],
-  //   function (err) {
-  //     if (err) throw err;
-  //     printAll();
-  //   }
-  // );
-
-
-  // function userPrompt() {
-//   inquirer.prompt([
-//     {
-//       name: "id",
-//       type: "input",
-//       message: "What is the ID of the Item you would like to purchase?",
-//       validate: function (value) {
-//         if (isNaN(value) === false) {
-//           return true;
-//         }
-//         return false;
-//       }
-//     },
-//     {
-//       name: "quantity",
-//       type: "input",
-//       message: "How many would you like to purchase?",
-//       validate: function (value) {
-//         if (isNaN(value) === false) {
-//           return true;
-//         }
-//         return false;
-//       }
-//     },
-//   ])
-
-//     .then(function (answer) {
-
-
-
-//       newStock = stock_quantity - answer.quantity
-
-//       updateProduct(newStock)
-
-//     }
-//     )
-
-// }

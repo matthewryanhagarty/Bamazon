@@ -4,6 +4,21 @@ This is my submission for assignment ten: Bamazon. We were tasked with creating 
 
 <img src="assets/gifs/bamazon.gif">
 
+
+
+# Connection to MySQL Workbench 
+<img src="assets/images/1.jpg">
+
+# Displaying Table to Customer 
+<img src="assets/images/2.jpg">
+
+# Prompting the Customer Using Inquirer
+<img src="assets/images/3.jpg">
+
+# Updating Stock Quantity
+<img src="assets/images/4.jpg">
+
+
 # Tech I Used:
 
 [Node.js](https://www.w3schools.com/nodejs/)
